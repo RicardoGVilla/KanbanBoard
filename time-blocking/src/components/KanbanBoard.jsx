@@ -10,29 +10,26 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
+const daysOfWeek = [
+  { id: 'mon', title: 'Mon Apr 14' },
+  { id: 'tue', title: 'Tue Apr 15' },
+  { id: 'wed', title: 'Wed Apr 16' },
+  { id: 'thu', title: 'Thu Apr 17' },
+  { id: 'fri', title: 'Fri Apr 18' },
+  { id: 'sat', title: 'Sat Apr 19' },
+  { id: 'sun', title: 'Sun Apr 20' },
+];
+
 const KanbanBoard = () => {
-  const [columns, setColumns] = useState([
-    {
-      id: 'mon-apr-14',
-      title: 'Mon Apr 14',
-      cards: [
+  const [columns, setColumns] = useState(
+    daysOfWeek.map(day => ({
+      ...day,
+      cards: day.id === 'mon' ? [
         { id: '1', content: 'gym' },
         { id: '2', content: 'groceries' }
-      ]
-    },
-    {
-      id: 'tue-apr-15',
-      title: 'Tue Apr 15',
-      cards: [
-        { id: '3', content: 'laundry' }
-      ]
-    },
-    {
-      id: 'wed-apr-16',
-      title: 'Wed Apr 16',
-      cards: []
-    }
-  ]);
+      ] : []
+    }))
+  );
 
   const [selectedCard, setSelectedCard] = useState(null);
 
@@ -64,6 +61,12 @@ const KanbanBoard = () => {
 
   return (
     <>
+      <div className="header">
+        <button>&larr;</button>
+        <span>Today</span>
+        <button>&rarr;</button>
+      </div>
+
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="kanban-board">
           {columns.map((column) => (
@@ -74,7 +77,7 @@ const KanbanBoard = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  <h3>{column.title}</h3>
+                  <div className="column-header">{column.title}</div>
                   <div className="cards">
                     {column.cards.map((card, index) => (
                       <Draggable key={card.id} draggableId={card.id} index={index}>
@@ -86,7 +89,7 @@ const KanbanBoard = () => {
                             {...provided.dragHandleProps}
                             onClick={() => setSelectedCard(card)}
                           >
-                            {card.content}
+                            <div className="card-title">{card.content}</div>
                           </div>
                         )}
                       </Draggable>
